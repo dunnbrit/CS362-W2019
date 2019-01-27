@@ -661,54 +661,130 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
   if (nextPlayer > (state->numPlayers - 1)){
     nextPlayer = 0;
   }
+
+
+  //Refactor of 5 cards: adventurer, smithy, steward,salvager, council room into functions outside of the switch statement
+
+  //Adventurer Card
+  void adventurerCard(){
+
+    int shuffleCount = 0;
+
+    while(drawntreasure<2){
+      if (state->deckCount[currentPlayer] <1){//if the deck is empty we need to shuffle discard and add to deck
+        //If deck has already been shuffled once then player stops drawing cards
+        if(shuffleCount > 0){
+          break;
+        }
+        shuffle(currentPlayer, state);
+        shuffleCount++;      
+      }
   
+      drawCard(currentPlayer, state);
+      cardDrawn = state->hand[currentPlayer][state->handCount[currentPlayer]-1];//top card of hand is most recently drawn card.
+      
+      if (cardDrawn == copper || cardDrawn == silver || cardDrawn == gold)
+        drawntreasure++;
+      else{
+        temphand[z]=cardDrawn;
+        state->handCount[currentPlayer]--; //this should just remove the top card (the most recently drawn one).
+        z++;
+        }
+
+    }
+      
+    while(z-1>=0){
+      state->discard[currentPlayer][state->discardCount[currentPlayer]++]=temphand[z-1]; // discard all cards in play that have been drawn
+      z=z-1;
+    }
+
+  } 
+
+  //Smithy Card
+  void smithyCard(){
+    //+3 Cards
+    drawCard(currentPlayer, state);
+    drawCard(currentPlayer, state);
+    drawCard(currentPlayer, state);
+
+    //discard card from hand
+    discardCard(handPos, currentPlayer, state, 0);   
+  }
+
+  //Salvager Card
+  void salvagerCard(){
+    //+1 buy
+    state->numBuys++;
+      
+    //gain coins equal to trashed card
+    state->coins = state->coins + getCost( handCard(choice1, state) );
+    //trash card
+    discardCard(choice1, currentPlayer, state, 1);  
+
+    //discard card
+    discardCard(handPos, currentPlayer, state, 0);
+  }
+  
+  //Council Room Card
+  void council_roomCard(){
+    //+4 Cards
+    drawCard(currentPlayer, state);
+    drawCard(currentPlayer, state);
+    drawCard(currentPlayer, state);
+    drawCard(currentPlayer, state);
+      
+    //+1 Buy
+    state->numBuys++;
+      
+    //Each other player draws a card
+    for (i = 0; i < state->numPlayers; i++)
+    {
+      if ( i != currentPlayer )
+      {
+        drawCard(i, state);
+      }
+    }
+      
+    //put played card in played card pile
+    discardCard(handPos, currentPlayer, state, 0);
+  }
 	
+  //Steward Card
+  void stewardCard(){
+    if (choice1 == 1)
+    {
+      //+2 cards
+      for(i = 0; i < 2; i++){
+        drawCard(currentPlayer, state); 
+      } 
+    }
+    else if (choice1 == 2)
+    {
+      //+2 coins
+      state->coins = state->coins + 2;
+    }
+    else
+    {
+      //trash 2 cards in hand
+      discardCard(choice2, currentPlayer, state, 1);
+      discardCard(choice3, currentPlayer, state, 1);
+    }
+      
+    //discard card from hand
+    discardCard(handPos, currentPlayer, state, 0);
+  }
+
+
+
   //uses switch to select card and perform actions
   switch( card ) 
     {
     case adventurer:
-      while(drawntreasure<2){
-	if (state->deckCount[currentPlayer] <1){//if the deck is empty we need to shuffle discard and add to deck
-	  shuffle(currentPlayer, state);
-	}
-	drawCard(currentPlayer, state);
-	cardDrawn = state->hand[currentPlayer][state->handCount[currentPlayer]-1];//top card of hand is most recently drawn card.
-	if (cardDrawn == copper || cardDrawn == silver || cardDrawn == gold)
-	  drawntreasure++;
-	else{
-	  temphand[z]=cardDrawn;
-	  state->handCount[currentPlayer]--; //this should just remove the top card (the most recently drawn one).
-	  z++;
-	}
-      }
-      while(z-1>=0){
-	state->discard[currentPlayer][state->discardCount[currentPlayer]++]=temphand[z-1]; // discard all cards in play that have been drawn
-	z=z-1;
-      }
+      adventurerCard();
       return 0;
 			
     case council_room:
-      //+4 Cards
-      for (i = 0; i < 4; i++)
-	{
-	  drawCard(currentPlayer, state);
-	}
-			
-      //+1 Buy
-      state->numBuys++;
-			
-      //Each other player draws a card
-      for (i = 0; i < state->numPlayers; i++)
-	{
-	  if ( i != currentPlayer )
-	    {
-	      drawCard(i, state);
-	    }
-	}
-			
-      //put played card in played card pile
-      discardCard(handPos, currentPlayer, state, 0);
-			
+      council_roomCard();
       return 0;
 			
     case feast:
@@ -829,14 +905,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
       return 0;
 		
     case smithy:
-      //+3 Cards
-      for (i = 0; i < 3; i++)
-	{
-	  drawCard(currentPlayer, state);
-	}
-			
-      //discard card from hand
-      discardCard(handPos, currentPlayer, state, 0);
+      smithyCard();
       return 0;
 		
     case village:
@@ -964,26 +1033,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
       return 0;
 		
     case steward:
-      if (choice1 == 1)
-	{
-	  //+2 cards
-	  drawCard(currentPlayer, state);
-	  drawCard(currentPlayer, state);
-	}
-      else if (choice1 == 2)
-	{
-	  //+2 coins
-	  state->coins = state->coins + 2;
-	}
-      else
-	{
-	  //trash 2 cards in hand
-	  discardCard(choice2, currentPlayer, state, 1);
-	  discardCard(choice3, currentPlayer, state, 1);
-	}
-			
-      //discard card from hand
-      discardCard(handPos, currentPlayer, state, 0);
+      stewardCard();
       return 0;
 		
     case tribute:
@@ -1164,19 +1214,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
       return 0;
 		
     case salvager:
-      //+1 buy
-      state->numBuys++;
-			
-      if (choice1)
-	{
-	  //gain coins equal to trashed card
-	  state->coins = state->coins + getCost( handCard(choice1, state) );
-	  //trash card
-	  discardCard(choice1, currentPlayer, state, 1);	
-	}
-			
-      //discard card
-      discardCard(handPos, currentPlayer, state, 0);
+      salvagerCard();
       return 0;
 		
     case sea_hag:
