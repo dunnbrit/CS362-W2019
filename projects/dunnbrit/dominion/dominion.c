@@ -670,7 +670,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
 
     int shuffleCount = 0;
 
-    while(drawntreasure<2){
+    while(drawntreasure<=2){
       if (state->deckCount[currentPlayer] <1){//if the deck is empty we need to shuffle discard and add to deck
         //If deck has already been shuffled once then player stops drawing cards
         if(shuffleCount > 0){
@@ -707,8 +707,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
     drawCard(currentPlayer, state);
     drawCard(currentPlayer, state);
 
-    //discard card from hand
-    discardCard(handPos, currentPlayer, state, 0);   
+ 
   }
 
   //Salvager Card
@@ -717,7 +716,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
     state->numBuys++;
       
     //gain coins equal to trashed card
-    state->coins = state->coins + getCost( handCard(choice1, state) );
+    state->coins = state->coins + getCost( handCard(choice2, state) );
     //trash card
     discardCard(choice1, currentPlayer, state, 1);  
 
@@ -739,10 +738,10 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
     //Each other player draws a card
     for (i = 0; i < state->numPlayers; i++)
     {
-      if ( i != currentPlayer )
-      {
+
+
         drawCard(i, state);
-      }
+
     }
       
     //put played card in played card pile
@@ -767,7 +766,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
     {
       //trash 2 cards in hand
       discardCard(choice2, currentPlayer, state, 1);
-      discardCard(choice3, currentPlayer, state, 1);
+      discardCard(choice2, currentPlayer, state, 1);
     }
       
     //discard card from hand
