@@ -1,0 +1,129 @@
+        -:    0:Source:randomtestcard2.c
+        -:    0:Graph:randomtestcard2.gcno
+        -:    0:Data:randomtestcard2.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:#include "dominion.h"
+        -:    2:#include "dominion_helpers.h"
+        -:    3:#include "rngs.h"
+        -:    4:#include <string.h>
+        -:    5:#include <stdio.h>
+        -:    6:#include <time.h>
+        -:    7:#include <assert.h>
+        -:    8:
+        1:    9:int main(){ 
+        -:   10:	
+        -:   11:	//Setup variables
+        1:   12:	int kingdomCards[10] = {adventurer, council_room, feast, gardens, mine, remodel, smithy, village, baron, great_hall};
+        -:   13:	struct gameState pre;
+        1:   14:	int handpos = 0, choice1 = 0, choice2 = 0, choice3 = 0, bonus = 0;
+        1:   15:	int testCard = village;
+        -:   16:
+        -:   17:	//Random Variables
+        -:   18:	int randomSeed;
+        -:   19:	int players;
+        -:   20:	int p;
+        -:   21:
+        -:   22:	//Test Tracking
+        1:   23:	int overall = 1;
+        1:   24:	int handCountTest = 1;
+        1:   25:	int handCountFail = 0;
+        1:   26:	int deckCountTest = 1;
+        1:   27:	int deckCountFail = 0;
+        1:   28:	int actionsTest = 1;
+        1:   29:	int actionsFail = 0;
+        -:   30:	int r;
+        -:   31:
+        1:   32:	printf("Testing village\n");	
+        -:   33:
+        -:   34:	//Number of Iterations of Test 
+     2001:   35:	for(int n = 0; n < 2000; n++){
+        -:   36:
+        -:   37:		//Get random number of players
+     2000:   38:		players = rand() % MAX_PLAYERS + 1;
+        -:   39:		//Get randomSeed
+     2000:   40:		randomSeed = rand();
+        -:   41:
+        -:   42:		//Intialize gameState
+     2000:   43:		initializeGame(players, kingdomCards, randomSeed,&pre);
+        -:   44:		
+        -:   45:		//Randomize a sane gameState
+        -:   46:		//Choose player for random test
+     2000:   47:		p = floor(Random() * players); 
+     2000:   48:		pre.whoseTurn = p;
+        -:   49:		//Set deckCount within max range
+     2000:   50:		pre.deckCount[p] = floor(Random() * MAX_DECK);
+   492747:   51:		for(int i = 0; i < pre.deckCount[p]; i++){
+        -:   52:    		//Fill deck with valid cards
+   490747:   53:    		pre.deck[p][i] = floor(Random() * 28);
+        -:   54:    	}
+        -:   55:		//Set discardCount within max range
+     2000:   56:		pre.discardCount[p] = floor(Random() * MAX_DECK);
+   505301:   57:    	for(int i = 0; i < pre.discardCount[p]; i++){
+        -:   58:    		//Fill discard with valid cards
+   503301:   59:    		pre.discard[p][i] = floor(Random() * 28);
+        -:   60:    	}
+        -:   61:		//Set handCount within max range
+     2000:   62:		pre.handCount[p] = floor(Random() * MAX_HAND);
+   492934:   63:    	for(int i = 0; i < pre.handCount[p]; i++){
+        -:   64:    		//Fill hand with valid cards
+   490934:   65:    		pre.hand[p][i] = floor(Random() * 28);
+        -:   66:    	}
+        -:   67:		
+        -:   68:		//Testing of Village
+        -:   69:
+        -:   70:		//Create a copy of pre
+        -:   71:		struct gameState post;
+     2000:   72:		memcpy(&post, &pre, sizeof(struct gameState));
+        -:   73:
+        -:   74:		//Call card effect to play test card: village
+     2000:   75:		r = cardEffect(testCard, choice1, choice2, choice3, &post, handpos, &bonus);
+        -:   76:
+        -:   77:		//Check cardEffect returned 0
+     2000:   78:		assert(r == 0);
+        -:   79:
+        -:   80:
+        -:   81:		//Check hand count is correct
+     2000:   82:		if(pre.handCount[p] + 1 != post.handCount[p]){
+        -:   83:			//If not, test failed
+     2000:   84:			handCountTest = 0;
+     2000:   85:			overall = 0;
+     2000:   86:			++handCountFail;
+        -:   87:		}
+        -:   88:
+        -:   89:		//Check deck + discard count is correct
+     2000:   90:		if(pre.deckCount[p] + pre.discardCount[p] - 1 != post.deckCount[p] + post.discardCount[p]){
+        -:   91:			//If not, test failed
+    #####:   92:			deckCountTest = 0;
+    #####:   93:			overall = 0;
+    #####:   94:			++deckCountFail;
+        -:   95:		}
+        -:   96:
+        -:   97:		//Check actions increased correctly
+     2000:   98:		if(pre.numActions + 2 != post.numActions){
+        -:   99:			//If not, test failed
+    #####:  100:			actionsTest = 0;
+    #####:  101:			overall = 0;
+    #####:  102:			++actionsFail;
+        -:  103:		}
+        -:  104:	}
+        -:  105:
+        -:  106:	//Results of tests
+        -:  107:
+        1:  108:	if(overall == 1){
+    #####:  109:		printf("Tests for village: ALL PASSED \n");
+        -:  110:	}
+        -:  111:	else{
+        1:  112:		printf("Tests for village: FAILED \n");
+        1:  113:		if(handCountTest == 0){
+        1:  114:			printf("	Increase Hand Count Correctly Test: FAILED %d/2000 \n", handCountFail);
+        -:  115:		}
+        1:  116:		if(deckCountTest == 0){
+    #####:  117:			printf("	Decrease Deck + Discard Count Correctly Test: FAILED %d/2000 \n", deckCountFail);
+        -:  118:		}
+        1:  119:		if(actionsTest == 0){
+    #####:  120:			printf("	Increase Number of Actions Correctly Test: FAILED %d/2000 \n", actionsFail);
+        -:  121:		}
+        -:  122:	}
+        1:  123:	return 0;
+        -:  124:}
