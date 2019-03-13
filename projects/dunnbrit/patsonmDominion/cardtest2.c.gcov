@@ -1,0 +1,614 @@
+        -:    0:Source:cardtest2.c
+        -:    0:Graph:cardtest2.gcno
+        -:    0:Data:cardtest2.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:#include "dominion.h"
+        -:    2:#include "dominion_helpers.h"
+        -:    3:#include "rngs.h"
+        -:    4:#include <string.h>
+        -:    5:#include <stdio.h>
+        -:    6:
+function main called 1 returned 100% blocks executed 83%
+        1:    7:int main()
+        -:    8:{
+        -:    9:	//Set variables to intialize game
+        -:   10:	//Referenced provided code samples
+        1:   11:	int numPlayers = 2 ;
+        1:   12:	int kingdomCards[10] = {adventurer, council_room, feast, gardens, mine
+        -:   13:               , remodel, smithy, village, baron, great_hall};
+        1:   14:	int randomSeed = 1000 ;
+        -:   15:	struct gameState G;
+        -:   16:	struct gameState copyG;
+        1:   17:	int testPlayer = 0;
+        1:   18:	int otherPlayer = 1;
+        1:   19:	int handpos = 0, choice1 = 0, choice2 = 0, choice3 = 0, bonus = 0;
+        -:   20:	//Number of treasure cards which should be added to hand after adventurer used
+        -:   21:	int treasureCards;
+        -:   22:	//Treasure in hand before adventurer used
+        -:   23:	int currentTreasure;
+        -:   24:
+        -:   25:	//Track overall pass or fail
+        1:   26:	int overall = 1;
+        -:   27:
+        1:   28:	printf("\n>>>Testing Card: adventurer <<<\n");
+call    0 returned 100%
+        -:   29:
+        1:   30:	printf("\n......Running Tests......\n");
+call    0 returned 100%
+        -:   31:
+        -:   32:
+        -:   33:
+        -:   34:	//Loop for each test case
+        6:   35:	for(int i = 0; i < 5; i++){
+branch  0 taken 83%
+branch  1 taken 17% (fallthrough)
+        5:   36:		if(i == 0){
+branch  0 taken 20% (fallthrough)
+branch  1 taken 80%
+        -:   37:			//Intialize a game
+        1:   38:			initializeGame(numPlayers,kingdomCards,randomSeed,&G);
+call    0 returned 100%
+        -:   39:
+        -:   40:			//Update deck to have 0 treasure cards
+        6:   41:			for (int i = 0; i < G.deckCount[0]; ++i){
+branch  0 taken 83%
+branch  1 taken 17% (fallthrough)
+        5:   42:				G.deck[testPlayer][i] = 1;
+        -:   43:			}
+        -:   44:
+        -:   45:			//Set treasure cards in deck to 0
+        1:   46:			treasureCards = 0;
+        -:   47:
+        -:   48:			//Get current number of treasure cards in hand
+        1:   49:			currentTreasure = 0;
+        -:   50:
+        6:   51:			for(int i = 0; i < G.handCount[testPlayer]; i++){
+branch  0 taken 83%
+branch  1 taken 17% (fallthrough)
+        5:   52:				if(G.hand[testPlayer][i] == 4 ||G.hand[testPlayer][i] == 5 ||G.hand[testPlayer][i] == 6){
+branch  0 taken 20% (fallthrough)
+branch  1 taken 80%
+branch  2 taken 100% (fallthrough)
+branch  3 taken 0%
+branch  4 taken 0% (fallthrough)
+branch  5 taken 100%
+        -:   53:					//Increase current treasure count by 1
+        4:   54:					currentTreasure += 1;
+        -:   55:				}
+        -:   56:			} 
+        -:   57:
+        -:   58:			//Copy current game state to use later to make sure parts of game state changes correctly
+        1:   59:			memcpy(&copyG, &G, sizeof(struct gameState));
+        -:   60:
+        1:   61:			printf("<<Test Case 1: Deck has 0 Treasure cards>>\n");
+call    0 returned 100%
+        -:   62:		}
+        -:   63:
+        4:   64:		else if(i == 1){
+branch  0 taken 25% (fallthrough)
+branch  1 taken 75%
+        -:   65:			//Clear game state
+        1:   66:			memset(&G,23,sizeof(struct gameState));
+        1:   67:			memset(&copyG,23,sizeof(struct gameState));
+        -:   68:
+        -:   69:			//Intialize a game
+        1:   70:			initializeGame(numPlayers,kingdomCards,randomSeed,&G);
+call    0 returned 100%
+        -:   71:
+        -:   72:			//Update deck to have 1 treasure cards
+        6:   73:			for (int i = 0; i < G.deckCount[0]; ++i){
+branch  0 taken 83%
+branch  1 taken 17% (fallthrough)
+        5:   74:				if(i == 0){
+branch  0 taken 20% (fallthrough)
+branch  1 taken 80%
+        1:   75:					G.deck[testPlayer][i] = 4;
+        -:   76:				}
+        -:   77:				else{
+        4:   78:				G.deck[testPlayer][i] = 1;
+        -:   79:				}
+        -:   80:			}
+        -:   81:
+        -:   82:			//Set treasure cards in deck to 1
+        1:   83:			treasureCards = 1;
+        -:   84:
+        -:   85:			//Get current number of treasure cards in hand
+        1:   86:			currentTreasure = 0;
+        -:   87:
+        6:   88:			for(int i = 0; i < G.handCount[testPlayer]; i++){
+branch  0 taken 83%
+branch  1 taken 17% (fallthrough)
+        5:   89:				if(G.hand[testPlayer][i] == 4 ||G.hand[testPlayer][i] == 5 ||G.hand[testPlayer][i] == 6){
+branch  0 taken 20% (fallthrough)
+branch  1 taken 80%
+branch  2 taken 100% (fallthrough)
+branch  3 taken 0%
+branch  4 taken 0% (fallthrough)
+branch  5 taken 100%
+        -:   90:					//Increase current treasure count by 1
+        4:   91:					currentTreasure += 1;
+        -:   92:				}
+        -:   93:			} 
+        -:   94:			//Copy current game state to use later to make sure parts of game state changes correctly
+        1:   95:			memcpy(&copyG, &G, sizeof(struct gameState));
+        -:   96:
+        1:   97:			printf("<<Test Case 2: Deck has 1 Treasure card>>\n");			
+call    0 returned 100%
+        -:   98:
+        -:   99:		}
+        -:  100:
+        3:  101:		else if(i == 2){
+branch  0 taken 33% (fallthrough)
+branch  1 taken 67%
+        -:  102:			//Clear game state
+        1:  103:			memset(&G,23,sizeof(struct gameState));
+        1:  104:			memset(&copyG,23,sizeof(struct gameState));
+        -:  105:
+        -:  106:			//Intialize a game
+        1:  107:			initializeGame(numPlayers,kingdomCards,randomSeed,&G);
+call    0 returned 100%
+        -:  108:
+        -:  109:			//Update deck to have 2 treasure cards
+        6:  110:			for (int i = 0; i < G.deckCount[0]; ++i){
+branch  0 taken 83%
+branch  1 taken 17% (fallthrough)
+        5:  111:				if(i == 0){
+branch  0 taken 20% (fallthrough)
+branch  1 taken 80%
+        1:  112:					G.deck[testPlayer][i] = 4;
+        -:  113:				}
+        4:  114:				else if(i ==1){
+branch  0 taken 25% (fallthrough)
+branch  1 taken 75%
+        1:  115:					G.deck[testPlayer][i] = 5;
+        -:  116:				}
+        -:  117:				else{
+        3:  118:				G.deck[testPlayer][i] = 1;
+        -:  119:				}
+        -:  120:			}
+        -:  121:
+        -:  122:			//Set treasure cards in deck to 2
+        1:  123:			treasureCards = 2;
+        -:  124:
+        -:  125:			//Get current number of treasure cards in hand
+        1:  126:			currentTreasure = 0;
+        -:  127:
+        6:  128:			for(int i = 0; i < G.handCount[testPlayer]; i++){
+branch  0 taken 83%
+branch  1 taken 17% (fallthrough)
+        5:  129:				if(G.hand[testPlayer][i] == 4 ||G.hand[testPlayer][i] == 5 ||G.hand[testPlayer][i] == 6){
+branch  0 taken 20% (fallthrough)
+branch  1 taken 80%
+branch  2 taken 100% (fallthrough)
+branch  3 taken 0%
+branch  4 taken 0% (fallthrough)
+branch  5 taken 100%
+        -:  130:					//Increase current treasure count by 1
+        4:  131:					currentTreasure += 1;
+        -:  132:				}
+        -:  133:			} 
+        -:  134:			//Copy current game state to use later to make sure parts of game state changes correctly
+        1:  135:			memcpy(&copyG, &G, sizeof(struct gameState));
+        -:  136:
+        1:  137:			printf("<<Test Case 3: Deck has 2 Treasure cards>>\n");			
+call    0 returned 100%
+        -:  138:
+        -:  139:		}
+        -:  140:
+        2:  141:		else if(i == 3){
+branch  0 taken 50% (fallthrough)
+branch  1 taken 50%
+        -:  142:			//Clear game state
+        1:  143:			memset(&G,23,sizeof(struct gameState));
+        1:  144:			memset(&copyG,23,sizeof(struct gameState));
+        -:  145:
+        -:  146:			//Intialize a game
+        1:  147:			initializeGame(numPlayers,kingdomCards,randomSeed,&G);
+call    0 returned 100%
+        -:  148:
+        -:  149:			//Update deck to have 3 treasure cards
+        6:  150:			for (int i = 0; i < G.deckCount[0]; ++i){
+branch  0 taken 83%
+branch  1 taken 17% (fallthrough)
+        5:  151:				if(i == 0){
+branch  0 taken 20% (fallthrough)
+branch  1 taken 80%
+        1:  152:					G.deck[testPlayer][i] = 4;
+        -:  153:				}
+        4:  154:				else if(i ==1){
+branch  0 taken 25% (fallthrough)
+branch  1 taken 75%
+        1:  155:					G.deck[testPlayer][i] = 5;
+        -:  156:				}
+        3:  157:				else if(i ==2){
+branch  0 taken 33% (fallthrough)
+branch  1 taken 67%
+        1:  158:					G.deck[testPlayer][i] = 6;
+        -:  159:				}
+        -:  160:				else{
+        2:  161:				G.deck[testPlayer][i] = 1;
+        -:  162:				}
+        -:  163:			}
+        -:  164:
+        -:  165:			//Set treasure cards in deck to 3
+        1:  166:			treasureCards = 3;
+        -:  167:
+        -:  168:			//Get current number of treasure cards in hand
+        1:  169:			currentTreasure = 0;
+        -:  170:
+        6:  171:			for(int i = 0; i < G.handCount[testPlayer]; i++){
+branch  0 taken 83%
+branch  1 taken 17% (fallthrough)
+        5:  172:				if(G.hand[testPlayer][i] == 4 ||G.hand[testPlayer][i] == 5 ||G.hand[testPlayer][i] == 6){
+branch  0 taken 20% (fallthrough)
+branch  1 taken 80%
+branch  2 taken 100% (fallthrough)
+branch  3 taken 0%
+branch  4 taken 0% (fallthrough)
+branch  5 taken 100%
+        -:  173:					//Increase current treasure count by 1
+        4:  174:					currentTreasure += 1;
+        -:  175:				}
+        -:  176:			} 
+        -:  177:			//Copy current game state to use later to make sure parts of game state changes correctly
+        1:  178:			memcpy(&copyG, &G, sizeof(struct gameState));
+        -:  179:
+        1:  180:			printf("<<Test Case 4: Deck has 3 Treasure cards>>\n");			
+call    0 returned 100%
+        -:  181:
+        -:  182:		}		
+        -:  183:
+        1:  184:		else if(i == 4){
+branch  0 taken 100% (fallthrough)
+branch  1 taken 0%
+        -:  185:			//Clear game state
+        1:  186:			memset(&G,23,sizeof(struct gameState));
+        1:  187:			memset(&copyG,23,sizeof(struct gameState));
+        -:  188:
+        -:  189:			//Intialize a game
+        1:  190:			initializeGame(numPlayers,kingdomCards,randomSeed,&G);
+call    0 returned 100%
+        -:  191:
+        -:  192:			//Update deck to have 5 treasure cards
+        6:  193:			for (int i = 0; i < G.deckCount[0]; ++i){
+branch  0 taken 83%
+branch  1 taken 17% (fallthrough)
+        5:  194:					G.deck[testPlayer][i] = 4;
+        -:  195:			}
+        -:  196:
+        -:  197:			//Set treasure cards in deck to 5
+        1:  198:			treasureCards = 5;
+        -:  199:
+        -:  200:			//Get current number of treasure cards in hand
+        1:  201:			currentTreasure = 0;
+        -:  202:
+        6:  203:			for(int i = 0; i < G.handCount[testPlayer]; i++){
+branch  0 taken 83%
+branch  1 taken 17% (fallthrough)
+        5:  204:				if(G.hand[testPlayer][i] == 4 ||G.hand[testPlayer][i] == 5 ||G.hand[testPlayer][i] == 6){
+branch  0 taken 20% (fallthrough)
+branch  1 taken 80%
+branch  2 taken 100% (fallthrough)
+branch  3 taken 0%
+branch  4 taken 0% (fallthrough)
+branch  5 taken 100%
+        -:  205:					//Increase current treasure count by 1
+        4:  206:					currentTreasure += 1;
+        -:  207:				}
+        -:  208:			} 
+        -:  209:			//Copy current game state to use later to make sure parts of game state changes correctly
+        1:  210:			memcpy(&copyG, &G, sizeof(struct gameState));
+        -:  211:
+        1:  212:			printf("<<Test Case 4: Deck has 5 Treasure cards>>\n");			
+call    0 returned 100%
+        -:  213:
+        -:  214:		}
+        -:  215:
+        -:  216:
+        -:  217:
+        -:  218:		//Test card using card effect
+        5:  219:		cardEffect(adventurer,choice1,choice2,choice3,&G,handpos,&bonus);
+call    0 returned 100%
+        -:  220:
+        -:  221:
+        5:  222:		printf("Found Treasures Added to Hand (Hand Count Increased Correctly): ");
+call    0 returned 100%
+        5:  223:		if(copyG.handCount[testPlayer]+ treasureCards == G.handCount[testPlayer]){
+branch  0 taken 0% (fallthrough)
+branch  1 taken 100%
+    #####:  224:			printf("PASSED \n");
+call    0 never executed
+        -:  225:		}
+        -:  226:		else{
+        5:  227:			printf("FAILED - Expected Count: %d  Actual: %d \n",(copyG.handCount[testPlayer] + treasureCards), G.handCount[testPlayer]);	
+call    0 returned 100%
+        5:  228:			overall = 0;
+        -:  229:		}
+        -:  230:
+        -:  231:
+        5:  232:		printf("Found Treasures Added to Hand (Deck Count Decreased Correctly): ");
+call    0 returned 100%
+        5:  233:		if(copyG.deckCount[testPlayer] - treasureCards == G.deckCount[testPlayer]){
+branch  0 taken 20% (fallthrough)
+branch  1 taken 80%
+        1:  234:			printf("PASSED \n");
+call    0 returned 100%
+        -:  235:		}
+        -:  236:		else{
+        4:  237:			printf("FAILED - Expected Count: %d  Actual: %d \n",(copyG.deckCount[testPlayer] - treasureCards), G.deckCount[testPlayer]);	
+call    0 returned 100%
+        4:  238:			overall = 0;
+        -:  239:		}
+        -:  240:
+        -:  241:
+        5:  242:		printf("Found Treasures Added to Hand  (Deck + Hand Count Unchanged): ");
+call    0 returned 100%
+        5:  243:		if((copyG.handCount[testPlayer] + copyG.deckCount[testPlayer]) == (G.handCount[testPlayer] + G.deckCount[testPlayer])){
+branch  0 taken 0% (fallthrough)
+branch  1 taken 100%
+    #####:  244:			printf("PASSED \n");
+call    0 never executed
+        -:  245:		}
+        -:  246:		else{
+        5:  247:			printf("FAILED - Expected Count: %d  Actual: %d \n",(copyG.handCount[testPlayer] + copyG.deckCount[testPlayer]), (G.handCount[testPlayer]+G.deckCount[testPlayer]) );
+call    0 returned 100%
+        5:  248:			overall = 0;
+        -:  249:		}
+        -:  250:	
+        5:  251:		printf("Added Cards are Treasure Cards (Current Treasure Count Increased Correctly): ");
+call    0 returned 100%
+        -:  252:		//Use to store treasure currently in had after adventurer
+        5:  253:		int treasureInHand = 0;
+        -:  254:
+       29:  255:		for(int i = 0; i < G.handCount[testPlayer]; i++){
+branch  0 taken 83%
+branch  1 taken 17% (fallthrough)
+       24:  256:			if(G.hand[testPlayer][i] == 4 ||G.hand[testPlayer][i] == 5 ||G.hand[testPlayer][i] == 6){
+branch  0 taken 21% (fallthrough)
+branch  1 taken 79%
+branch  2 taken 100% (fallthrough)
+branch  3 taken 0%
+branch  4 taken 0% (fallthrough)
+branch  5 taken 100%
+        -:  257:				//Increase current treasure count by 1
+       19:  258:					treasureInHand += 1;
+        -:  259:				}
+        -:  260:		}		
+        -:  261:
+        5:  262:		if(treasureInHand == currentTreasure + treasureCards){
+branch  0 taken 0% (fallthrough)
+branch  1 taken 100%
+    #####:  263:			printf("PASSED \n");
+call    0 never executed
+        -:  264:		}
+        -:  265:		else{
+        5:  266:			printf("FAILED - Expected Count: %d  Actual: %d \n",(currentTreasure + treasureCards), treasureInHand);
+call    0 returned 100%
+        5:  267:			overall = 0;
+        -:  268:		}
+        -:  269:
+        -:  270:
+        5:  271:		printf("Test Player Discarded adventurer (Discard Pile Contains adventurer): ");
+call    0 returned 100%
+        -:  272:		//Varible for the containing adventurer
+        5:  273:		int contains = 0;
+        -:  274:
+        -:  275:		//Loop through player discard pile and check for adventurer
+       31:  276:		for(int i = 0; i < G.discardCount[testPlayer]; i++){
+branch  0 taken 84%
+branch  1 taken 16% (fallthrough)
+       26:  277:			if(G.discard[testPlayer][i] == 7){
+branch  0 taken 0% (fallthrough)
+branch  1 taken 100%
+        -:  278:				//Card is in discard, set true
+    #####:  279:				contains = 1;
+        -:  280:			}
+        -:  281:		}
+        -:  282:	
+        5:  283:		if(contains == 0){
+branch  0 taken 100% (fallthrough)
+branch  1 taken 0%
+        5:  284:			printf("FAILED \n");
+call    0 returned 100%
+        5:  285:			overall = 0;
+        -:  286:		}
+        -:  287:		else{
+    #####:  288:			printf("PASSED \n");
+call    0 never executed
+        -:  289:		}
+        -:  290:
+        -:  291:	
+        -:  292:
+        -:  293:	//Check the game state is unaffected by adventurer by compare previous game state to current game state
+        -:  294:	
+        5:  295:	printf("Game State Remains Unchanged (Other Player's Hand Count is Unchanged): ");
+call    0 returned 100%
+        -:  296:	//check other player's hand count is the same as before adventurer was used
+        5:  297:	if(copyG.handCount[otherPlayer] == G.handCount[otherPlayer]){
+branch  0 taken 100% (fallthrough)
+branch  1 taken 0%
+        5:  298:		printf("PASSED \n");
+call    0 returned 100%
+        -:  299:	}
+        -:  300:	else{
+    #####:  301:		printf("FAILED - Expected Hand Count: %d , Actual: %d \n", copyG.handCount[otherPlayer], G.handCount[otherPlayer]) ;
+call    0 never executed
+    #####:  302:		overall = 0;
+        -:  303:	}
+        -:  304:
+        -:  305:
+        5:  306:	printf("Game State Remains Unchanged (Other Player's Deck Count is Unchanged): ");
+call    0 returned 100%
+        -:  307:	//check other player's deck count is the same as before adventurer was used
+        5:  308:	if(copyG.deckCount[otherPlayer] == G.deckCount[otherPlayer]){
+branch  0 taken 100% (fallthrough)
+branch  1 taken 0%
+        5:  309:		printf("PASSED \n");
+call    0 returned 100%
+        -:  310:	}
+        -:  311:	else{
+    #####:  312:		printf("FAILED - Expected Deck Count: %d , Actual: %d \n", copyG.deckCount[otherPlayer], G.deckCount[otherPlayer]) ;
+call    0 never executed
+    #####:  313:		overall = 0;
+        -:  314:	}
+        -:  315:
+        -:  316:
+        5:  317:	printf("Game State Remains Unchanged (Other Player's Discard Count is Unchanged): ");
+call    0 returned 100%
+        -:  318:	//check other player's discard count is the same as before adventurer was used
+        5:  319:	if(copyG.discardCount[otherPlayer] == G.discardCount[otherPlayer]){
+branch  0 taken 100% (fallthrough)
+branch  1 taken 0%
+        5:  320:		printf("PASSED \n");
+call    0 returned 100%
+        -:  321:	}
+        -:  322:	else{
+    #####:  323:		printf("FAILED - Expected Discard Count: %d , Actual: %d \n", copyG.discardCount[otherPlayer], G.discardCount[otherPlayer]) ;
+call    0 never executed
+    #####:  324:		overall = 0;
+        -:  325:	}
+        -:  326:
+        -:  327:
+        5:  328:	printf("Game State Remains Unchanged (Supply Count for Victory Cards is Unchanged): ");
+call    0 returned 100%
+        -:  329:	//varible to track supply is unchanged
+        5:  330:	int supplyUnchanged = 1;
+        -:  331:
+        -:  332:	//Check count of all victory cards
+        5:  333:	if(supplyCount(estate, &copyG) != supplyCount(estate, &G)){
+call    0 returned 100%
+call    1 returned 100%
+branch  2 taken 0% (fallthrough)
+branch  3 taken 100%
+    #####:  334:		supplyUnchanged = 0;
+    #####:  335:		printf("FAILED For Estate Count: Expected: %d Actual:%d \n",supplyCount(estate,&copyG), supplyCount(estate, &G) );
+call    0 never executed
+call    1 never executed
+call    2 never executed
+        -:  336:	}
+        5:  337:	if(supplyCount(duchy, &copyG) != supplyCount(duchy, &G)){
+call    0 returned 100%
+call    1 returned 100%
+branch  2 taken 0% (fallthrough)
+branch  3 taken 100%
+    #####:  338:		supplyUnchanged = 0;
+    #####:  339:		printf("FAILED For Duchy Count: Expected: %d Actual:%d \n",supplyCount(duchy,&copyG), supplyCount(duchy, &G) );
+call    0 never executed
+call    1 never executed
+call    2 never executed
+        -:  340:	}	
+        5:  341:	if(supplyCount(province, &copyG) != supplyCount(province, &G)){
+call    0 returned 100%
+call    1 returned 100%
+branch  2 taken 0% (fallthrough)
+branch  3 taken 100%
+    #####:  342:		supplyUnchanged = 0;
+    #####:  343:		printf("FAILED For Province Count: Expected: %d Actual:%d \n",supplyCount(province,&copyG), supplyCount(province, &G) );
+call    0 never executed
+call    1 never executed
+call    2 never executed
+        -:  344:	}
+        -:  345:	
+        -:  346:
+        5:  347:	if(supplyUnchanged == 1){
+branch  0 taken 100% (fallthrough)
+branch  1 taken 0%
+        5:  348:		printf("PASSED\n");
+call    0 returned 100%
+        -:  349:	}
+        -:  350:
+        -:  351:
+        5:  352:	printf("Game State Remains Unchanged (Supply Count for Coin Cards is Unchanged): ");
+call    0 returned 100%
+        -:  353:	//varible to track supply is unchanged
+        5:  354:	supplyUnchanged = 1;
+        -:  355:
+        -:  356:	//Check count of all coins
+        5:  357:	if(supplyCount(copper, &copyG) != supplyCount(copper, &G)){
+call    0 returned 100%
+call    1 returned 100%
+branch  2 taken 0% (fallthrough)
+branch  3 taken 100%
+    #####:  358:		supplyUnchanged = 0;
+    #####:  359:		printf("FAILED For copper Count: Expected: %d Actual:%d \n",supplyCount(copper,&copyG), supplyCount(copper, &G) );
+call    0 never executed
+call    1 never executed
+call    2 never executed
+        -:  360:	}
+        5:  361:	if(supplyCount(silver, &copyG) != supplyCount(silver, &G)){
+call    0 returned 100%
+call    1 returned 100%
+branch  2 taken 0% (fallthrough)
+branch  3 taken 100%
+    #####:  362:		supplyUnchanged = 0;
+    #####:  363:		printf("FAILED For silver Count: Expected: %d Actual:%d \n",supplyCount(silver,&copyG), supplyCount(silver, &G) );
+call    0 never executed
+call    1 never executed
+call    2 never executed
+        -:  364:	}
+        5:  365:	if(supplyCount(gold, &copyG) != supplyCount(gold, &G)){
+call    0 returned 100%
+call    1 returned 100%
+branch  2 taken 0% (fallthrough)
+branch  3 taken 100%
+    #####:  366:		supplyUnchanged = 0;
+    #####:  367:		printf("FAILED For gold Count: Expected: %d Actual:%d \n",supplyCount(gold,&copyG), supplyCount(gold, &G) );
+call    0 never executed
+call    1 never executed
+call    2 never executed
+        -:  368:	}
+        -:  369:
+        5:  370:	if(supplyUnchanged == 1){
+branch  0 taken 100% (fallthrough)
+branch  1 taken 0%
+        5:  371:		printf("PASSED\n");
+call    0 returned 100%
+        -:  372:	}
+        -:  373:
+        5:  374:	printf("Game State Remains Unchanged (Supply Count for All Kingdom Cards is Unchanged): ");
+call    0 returned 100%
+        -:  375:	//varible to track supply is unchanged
+        5:  376:	supplyUnchanged = 1;
+        -:  377:
+        -:  378:	//Check each kingdom card
+       55:  379:	for(int i = 0; i < 10; i++){
+branch  0 taken 91%
+branch  1 taken 9% (fallthrough)
+       50:  380:		if(supplyCount(kingdomCards[i], &copyG) != supplyCount(kingdomCards[i], &G)){
+call    0 returned 100%
+call    1 returned 100%
+branch  2 taken 0% (fallthrough)
+branch  3 taken 100%
+    #####:  381:			supplyUnchanged = 0;
+    #####:  382:			printf("FAILED For kingdom Card %d Count: Expected: %d Actual:%d \n",i ,supplyCount(kingdomCards[i],&copyG), supplyCount(kingdomCards[i], &G) );
+call    0 never executed
+call    1 never executed
+call    2 never executed
+        -:  383:		}
+        -:  384:	}
+        -:  385:
+        5:  386:	if(supplyUnchanged == 1){
+branch  0 taken 100% (fallthrough)
+branch  1 taken 0%
+        5:  387:		printf("PASSED\n\n");
+call    0 returned 100%
+        -:  388:	}
+        -:  389:	
+        -:  390:}
+        -:  391:
+        -:  392:	//Finished Result
+        1:  393:	if(overall == 0){
+branch  0 taken 100% (fallthrough)
+branch  1 taken 0%
+        1:  394:		printf(">>>Testing of adventurer FAILED <<<\n");
+call    0 returned 100%
+        -:  395:	}
+        -:  396:
+        -:  397:	else{
+    #####:  398:		printf(">>>Testing of adventurer PASSED <<<\n");
+call    0 never executed
+        -:  399:	}
+        -:  400:
+        1:  401:	return 0;
+        -:  402:}
