@@ -778,7 +778,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
     {
           //modified per assignmnet 2
     case adventurer:
-        return funcAdventurer(state);
+        return funcAdventurer(&state);
  		
     case council_room:
       //+4 Cards
