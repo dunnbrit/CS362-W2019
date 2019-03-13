@@ -1,0 +1,150 @@
+        -:    0:Source:randomtestcard1.c
+        -:    0:Graph:randomtestcard1.gcno
+        -:    0:Data:randomtestcard1.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:#include "dominion.h"
+        -:    2:#include "dominion_helpers.h"
+        -:    3:#include "rngs.h"
+        -:    4:#include <string.h>
+        -:    5:#include <stdio.h>
+        -:    6:#include <time.h>
+        -:    7:#include <assert.h>
+        -:    8:
+        1:    9:int main(){
+        -:   10: 
+        -:   11:	//Setup variables
+        1:   12:	int kingdomCards[10] = {adventurer, council_room, feast, gardens, mine, remodel, smithy, village, baron, great_hall};
+        -:   13:	struct gameState pre;
+        1:   14:	int handpos = 0, choice1 = 0, choice2 = 0, choice3 = 0, bonus = 0;
+        1:   15:	int testCard = smithy;
+        -:   16:
+        -:   17:	//Random Variables
+        -:   18:	int randomSeed;
+        -:   19:	int players;
+        -:   20:	int p;
+        -:   21:
+        -:   22:	//Test Tracking
+        1:   23:	int overall = 1;
+        1:   24:	int handCountTest = 1;
+        1:   25:	int handCountFail = 0;
+        1:   26:	int deckCountTest = 1;
+        1:   27:	int deckCountFail = 0;
+        1:   28:	int handTest = 1;
+        1:   29:	int handFail = 0;
+        1:   30:	int numberHandFail = 0;
+        -:   31:	int r;
+        -:   32:
+        1:   33:	printf("Testing smithy\n");	
+        -:   34:
+        -:   35:	//Number of Iterations of Test 
+     2001:   36:	for(int n = 0; n < 2000; n++){
+        -:   37:
+        -:   38:		//Get random number of players
+     2000:   39:		players = rand() % MAX_PLAYERS + 1;
+        -:   40:		//Get randomSeed
+     2000:   41:		randomSeed = rand();
+        -:   42:
+        -:   43:		//Intialize gameState
+     2000:   44:		initializeGame(players, kingdomCards, randomSeed,&pre);
+        -:   45:		
+        -:   46:		//Randomize a sane gameState
+        -:   47:		//Choose player for random test
+     2000:   48:		p = floor(Random() * players); 
+     2000:   49:		pre.whoseTurn = p;
+        -:   50:		//Set deckCount within max range (min of 3 cards to draw from)
+     2000:   51:		pre.deckCount[p] = floor(Random() * MAX_DECK) + 3;
+   498747:   52:		for(int i = 0; i < pre.deckCount[p]; i++){
+        -:   53:    		//Fill deck with valid cards
+   496747:   54:    		pre.deck[p][i] = floor(Random() * 28);
+        -:   55:    	}
+        -:   56:		//Set discardCount within max range
+     2000:   57:		pre.discardCount[p] = floor(Random() * MAX_DECK);
+   511206:   58:    	for(int i = 0; i < pre.discardCount[p]; i++){
+        -:   59:    		//Fill discard with valid cards
+   509206:   60:    		pre.discard[p][i] = floor(Random() * 28);
+        -:   61:    	}
+        -:   62:		//Set handCount within max range
+     2000:   63:		pre.handCount[p] = floor(Random() * MAX_HAND);
+   505552:   64:    	for(int i = 0; i < pre.handCount[p]; i++){
+        -:   65:    		//Fill hand with valid cards
+   503552:   66:    		pre.hand[p][i] = floor(Random() * 28);
+        -:   67:    	}
+        -:   68:		
+        -:   69:		//Testing of Smithy
+        -:   70:
+        -:   71:		//Create a copy of pre
+        -:   72:		struct gameState post;
+     2000:   73:		memcpy(&post, &pre, sizeof(struct gameState));
+        -:   74:
+        -:   75:		//Call card effect to play test card: smithy
+     2000:   76:		r = cardEffect(testCard, choice1, choice2, choice3, &post, handpos, &bonus);
+        -:   77:
+        -:   78:		//Update pre to expected results of playing card smithy
+     8000:   79:		for(int i = 0; i < 3; i++){
+        -:   80:			//Increase handCount
+     6000:   81:			pre.handCount[p]++;
+        -:   82:			//Move card from deck to hand
+     6000:   83:    		pre.hand[p][pre.handCount[p]-1] = pre.deck[p][pre.deckCount[p] -1];
+        -:   84:    		//Decrease deckCount
+     6000:   85:    		pre.deckCount[p]--;
+        -:   86:		}
+        -:   87:
+        -:   88:
+        -:   89:
+        -:   90:		//Check cardEffect returned 0
+     2000:   91:		assert(r == 0);
+        -:   92:
+        -:   93:		//Check hand count is correct
+     2000:   94:		if(pre.handCount[p] != post.handCount[p]){
+        -:   95:			//If not, test failed
+    #####:   96:			handCountTest = 0;
+    #####:   97:			overall = 0;
+    #####:   98:			++handCountFail;
+        -:   99:		}
+        -:  100:
+        -:  101:		//Check deck count is correct
+     2000:  102:		if(pre.deckCount[p] != post.deckCount[p]){
+        -:  103:			//If not, test failed
+     2000:  104:			deckCountTest = 0;
+     2000:  105:			overall = 0;
+     2000:  106:			++deckCountFail;
+        -:  107:		}
+        -:  108:
+        -:  109:		//Check hand contains correct cards
+        -:  110:		//set handFail to false
+     2000:  111:		handFail = 0;
+        -:  112:		//compare pre and post hands
+   511552:  113:		for(int i = 0; i < pre.handCount[p] ; i++){
+   509552:  114:			if(pre.hand[p][i] != post.hand[p][i]){
+     1941:  115:				overall = 0;
+     1941:  116:				handTest = 0;
+     1941:  117:				handFail = 1;
+        -:  118:			}
+        -:  119:		}
+        -:  120:		//If failed
+     2000:  121:		if(handFail == 1){
+     1941:  122:			++numberHandFail;
+        -:  123:		}
+        -:  124:	}
+        -:  125:
+        -:  126:	//Results of tests
+        -:  127:
+        1:  128:	if(overall == 1){
+    #####:  129:		printf("Tests for smithy: ALL PASSED \n");
+        -:  130:	}
+        -:  131:	else{
+        1:  132:		printf("Tests for smithy: FAILED \n");
+        1:  133:		if(handCountTest == 0){
+    #####:  134:			printf("	Increase Hand Count Correctly Test: FAILED %d/2000 \n", handCountFail);
+        -:  135:		}
+        1:  136:		if(deckCountTest == 0){
+        1:  137:			printf("	Decrease Deck Count Correctly Test: FAILED %d/2000 \n", deckCountFail);
+        -:  138:		}
+        1:  139:		if(handTest == 0){
+        1:  140:			printf("	Correct Cards in Hand: FAILED %d/2000\n", numberHandFail );
+        -:  141:		}
+        -:  142:	}
+        -:  143:
+        1:  144:	return 0;
+        -:  145:}
