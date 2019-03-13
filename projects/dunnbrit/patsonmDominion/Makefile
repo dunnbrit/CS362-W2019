@@ -62,18 +62,6 @@ randomTestResultsCard2: randomtestcard2
 	cat dominion.c.gcov >> randomtestcard2.out
 	cat randomtestcard2.c.gcov >> randomtestcard2.out
 
-unittest1: unittest1.c dominion.o rngs.o
-	gcc -o unittest1 -g unittest1.c dominion.o rngs.o $(CFLAGS)
-
-unittest2: unittest2.c dominion.o rngs.o
-	gcc -o unittest2 -g unittest2.c dominion.o rngs.o $(CFLAGS)
-
-unittest3: unittest3.c dominion.o rngs.o
-	gcc -o unittest3 -g unittest3.c dominion.o rngs.o $(CFLAGS)
-
-unittest4: unittest4.c dominion.o rngs.o
-	gcc -o unittest4 -g unittest4.c dominion.o rngs.o $(CFLAGS)
-
 cardtest1: cardtest1.c dominion.o rngs.o
 	gcc -o cardtest1 -g cardtest1.c dominion.o rngs.o $(CFLAGS)
 
@@ -86,29 +74,17 @@ cardtest3: cardtest3.c dominion.o rngs.o
 cardtest4: cardtest4.c dominion.o rngs.o
 	gcc -o cardtest4 -g cardtest4.c dominion.o rngs.o $(CFLAGS)
 
-unittestresults: unittest1 unittest2 unittest3 unittest4 cardtest1 cardtest2 cardtest3 cardtest4
-	./unittest1 >> unittestresults.out 
-	./unittest2 >> unittestresults.out
-	./unittest3 >> unittestresults.out
-	./unittest4 >> unittestresults.out
+unittestresults: cardtest1 cardtest2 cardtest3 cardtest4
 	./cardtest1 >> unittestresults.out
 	./cardtest2 >> unittestresults.out
 	./cardtest3 >> unittestresults.out
 	./cardtest4 >> unittestresults.out
-	gcov unittest1.c -b >> unittestresults.out
-	gcov unittest2.c -b >> unittestresults.out
-	gcov unittest3.c -b >> unittestresults.out
-	gcov unittest4.c -b >> unittestresults.out
 	gcov cardtest1.c -b >> unittestresults.out
 	gcov cardtest2.c -b >> unittestresults.out
 	gcov cardtest3.c -b >> unittestresults.out
 	gcov cardtest4.c -b >> unittestresults.out
 	gcov dominion.c -f >> unittestresults.out
 	cat dominion.c.gcov >> unittestresults.out
-	cat unittest1.c.gcov >> unittestresults.out
-	cat unittest2.c.gcov >> unittestresults.out
-	cat unittest3.c.gcov >> unittestresults.out
-	cat unittest4.c.gcov >> unittestresults.out
 	cat cardtest1.c.gcov >> unittestresults.out
 	cat cardtest2.c.gcov >> unittestresults.out
 	cat cardtest3.c.gcov >> unittestresults.out
