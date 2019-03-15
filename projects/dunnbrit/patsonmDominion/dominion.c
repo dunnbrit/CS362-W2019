@@ -778,7 +778,8 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
     {
           //modified per assignmnet 2
     case adventurer:
-        return funcAdventurer(&state);
+        //Segmentation Fault in Adventurer Bug
+	return funcAdventurer(&state);
  		
     case council_room:
       //+4 Cards
@@ -932,7 +933,8 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
       state->numActions = state->numActions + 2;
 			
       //discard played card from hand
-      discardCard(handPos, currentPlayer, state, 0);
+      	//Draw Card for Village Bug Fix
+	//discardCard(handPos, currentPlayer, state, 0);
       return 0;
 		
     case baron:
